@@ -8,6 +8,7 @@
 
 ### Day 1: Get `print8.ls8` running
 
+
 - [ ] Inventory what is here
 - [ ] Implement the `CPU` constructor
 - [ ] Add RAM functions `ram_read()` and `ram_write()`

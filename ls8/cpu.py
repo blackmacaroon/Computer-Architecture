@@ -7,8 +7,8 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        self.ram = [0] * 256   #random access memory = 256 bits
-        self.reg = [0] * 8     #registries = 8
+        self.ram = [0] * 256   #random access memory = 256 bits     list of 256 zeros
+        self.reg = [0] * 8     #registries = 8   list of 8 zeros
         self.pc = 0            #internal registers, if we need them
         
     #MAR = memory address register
@@ -80,4 +80,9 @@ class CPU:
         while running:
             IR = self.ram[self.pc]  #IR = instruction register
 
-            if IR = 
+            operand_a = self.ram_read(self.pc+1)
+            operand_b = self.ram_read(self.pc+2)
+            if IR = "LDI":
+            elif IR = "PRN":
+            elif IR = "HLT":
+                running = False

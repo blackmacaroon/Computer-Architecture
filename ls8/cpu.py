@@ -14,13 +14,13 @@ class CPU:
     #MAR = memory address register
     #accept the ADDRESS to read and return the value stored there
     def ram_read(self, MAR):
-        print("ram read", MAR)
+        # print("ram read", MAR)
         return self.ram[MAR]
         
     #MDR = memory data register
     #accept the VALUE/DATA to write, and the ADDRESS to write it to
     def ram_write(self, MDR, MAR):
-        print("ram write", MDR)
+        # print("ram write", MDR)
         self.ram[MAR] = MDR
 
     def load(self):
@@ -80,25 +80,28 @@ class CPU:
         running = True
         
         while running:
-            self.trace()
+            # self.trace()
             IR = self.ram[self.PC]  #IR = instruction register
             operand_a = self.ram_read(self.PC+1)
             operand_b = self.ram_read(self.PC+2)
+            LDI = 0b10000010
+            PRN = 0b01000111
+            HLT = 0b00000001
+            
             # set the value from the register to an integer
-            print("IR", IR)
-            print("op A", operand_a)
-            print("op B", operand_b)
-            if IR == "LDI":
+            # print("IR", IR)
+            # print("op A", operand_a)
+            # print("op B", operand_b)
+            if IR == LDI:
                 self.reg[operand_a] = [operand_b]
                 self.PC += 3
             #Print to the console the decimal integer value stored in the given register
-            elif IR == "PRN":
+            elif IR == PRN:
                 print(f"print value: {self.reg[operand_a]}")
                 self.PC += 2
                 #halt! and exit
-            elif IR == "HLT":
+            elif IR == HLT:
                 running = False
-                sys.exit(1)
             else:
                 print(f"Unknown Instruction: {IR}")
                 sys.exit(1)

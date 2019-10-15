@@ -9,7 +9,7 @@ class CPU:
         """Construct a new CPU."""
         self.ram = [0] * 256   #random access memory = 256 bits     list of 256 zeros
         self.reg = [0] * 8     #registries = 8   list of 8 zeros
-        self.pc = 0            #internal registers, if we need them
+        self.PC = 0            #internal registers, if we need them
         
     #MAR = memory address register
     #accept the ADDRESS to read and return the value stored there
@@ -76,20 +76,29 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        self.running = True
+        #read the memory address that's stored in register `PC`
+        running = True
         
-        while self.running:
+        while running:
+            self.trace()
             IR = self.ram[self.PC]  #IR = instruction register
             operand_a = self.ram_read(self.PC+1)
             operand_b = self.ram_read(self.PC+2)
             # set the value from the register to an integer
+            print("IR", IR)
+            print("op A", operand_a)
+            print("op B", operand_b)
             if IR == "LDI":
                 self.reg[operand_a] = [operand_b]
-                self.pc += 2
+                self.PC += 3
             #Print to the console the decimal integer value stored in the given register
             elif IR == "PRN":
-                #halt! and exit.
-            else:
+                print(f"print value: {self.reg[operand_a]}")
+                self.PC += 2
+                #halt! and exit
+            elif IR == "HLT":
                 running = False
-                print(f"This means nothing to me: {register}")
+                sys.exit(1)
+            else:
+                print(f"Unknown Instruction: {IR}")
                 sys.exit(1)

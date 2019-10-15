@@ -10,12 +10,18 @@ class CPU:
         self.ram = [0] * 256   #random access memory = 256 bits
         self.reg = [0] * 8     #registries = 8
         self.pc = 0            #internal registers, if we need them
-        pass
-
-    def ram_read(self):
-        pass
-    def ram_write(self):
-        pass
+        
+    #MAR = memory address register
+    #accept the ADDRESS to read and return the value stored there
+    def ram_read(self, MAR):
+        print("ram read", MAR)
+        return self.ram[MAR]
+        
+    #MDR = memory data register
+    #accept the VALUE/DATA to write, and the ADDRESS to write it to
+    def ram_write(self, MDR, MAR):
+        print("ram write", MDR)
+        self.ram[MAR] = MDR
 
     def load(self):
         """Load a program into memory."""
@@ -70,4 +76,8 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        pass
+        running = True
+        while running:
+            IR = self.ram[self.pc]  #IR = instruction register
+
+            if IR = 

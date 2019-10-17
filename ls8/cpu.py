@@ -10,6 +10,7 @@ class CPU:
         self.PC = 0
         self.SPL = 7
         
+        
     def load(self):
         """Load a program into memory."""
         address = 0
@@ -43,11 +44,15 @@ class CPU:
         #     self.ram[address] = instruction
         #     address += 1
     def alu(self, op, reg_a, reg_b):
-        """ALU operations."""
+        """ALU operations -- ARITHMETIC LOGIC UNIT"""
         if op == "ADD":
             self.register[reg_a] += self.register[reg_b]
+        elif op == "SUB":
+            self.register[reg_a] -= self.register[reg_b]
         elif op == "MUL":
             self.register[reg_a] *= self.register[reg_b]
+        elif op == "DIV":
+            self.register[reg_a] /= self.register[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
     def ram_read(self, MAR):
@@ -79,6 +84,7 @@ class CPU:
         LDI = 0b10000010
         ADD = 0b10100000
         MUL = 0b10100010
+        DIV = 0b10100011
         PUSH = 0b01000101
         POP = 0b01000110
         CALL = 0b01010000
@@ -113,17 +119,14 @@ class CPU:
                 self.PC += 2
             elif IR == PUSH:
                 self.SPL -= 1
-                # Copy the value in the given register to the address pointed to by SP.
-                # after we've moved the pointer
                 self.ram[self.SPL] = self.register[operandA]
                 self.PC += 2
             elif IR == CALL:
-                #push the return addres to the stack
                 self.register[self.SPL] -= 1
                 self.ram[self.SPL] = self.PC +2
                 self.PC = self.register[operandA]
             elif IR == RET:
-                self.PC = self.ram[self.register[self.SPL]]
+                self.PC = self.ram[self.SPL]
                 self.register[self.SPL] += 1
                 
 

@@ -8,11 +8,11 @@ class CPU:
         self.ram = [0] * 256
         self.register = [0] * 8
         self.PC = 0
+        self.SPL = 7
         
     def load(self):
         """Load a program into memory."""
         address = 0
-        # For now, we've just hardcoded a program:
         # program = []
         
         # if sys.argv[1] is None:
@@ -54,6 +54,8 @@ class CPU:
         return self.ram[MAR]
     def ram_write(self, MDR, MAR):
         self.ram[MAR] = MDR
+    # def handle_push(self):
+    # def handle_pop(self):
     def trace(self):
         """
         Handy function to print out the CPU state. You might want to call this
@@ -76,6 +78,8 @@ class CPU:
         HLT = 0b00000001
         LDI = 0b10000010
         MUL = 0b10100010
+        PUSH = 0b01000101
+        POP = 0b01000110
         running = True
         while running:
             IR = self.ram[self.PC]
@@ -87,18 +91,23 @@ class CPU:
                 self.register[operandA] = operandB
                 self.PC += 3
             elif IR == PRN:
-                operandA = self.ram_read(self.PC + 1)
                 print(self.register[operandA])
                 self.PC += 2
             elif IR == HLT:
                 running = False
                 self.PC += 1
             elif IR == MUL:
-                # operandA = self.ram[self.PC + 1]
-                # operandB = self.ram[self.PC + 2]
-                # self.register[operandA] *= self.register[operandB]
                 self.alu("MUL", operandA, operandB)
                 self.PC += 3
+            elif IR == POP:
+                self.register[operandA] = self.ram[self.SPL]
+                self.SPL += 1
+                self.PC += 2
+            elif IR == PUSH:
+                self.SPL -= 1
+                self.ram[self.SPL] = self.register[operandA]
+                self.PC += 2
+
             else:
                 print(f"Unknown Instruction {IR}")
                 sys.exit(1)

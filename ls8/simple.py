@@ -125,7 +125,7 @@ while running:
         # push the return address on the stack
         register[SP] -= 1
         memory[register[SP]] = pc + 2
-        # The PC is set to the address stored in the give register
+        # set the PC to the address stored in the give register - place holder for where we return
         reg = memory[pc + 1]
         # we jump to that location in RAM and execute the first instruction in the subroutine
         pc = register[reg]

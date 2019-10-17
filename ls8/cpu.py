@@ -77,6 +77,7 @@ class CPU:
         PRN = 0b01000111
         HLT = 0b00000001
         LDI = 0b10000010
+        ADD = 0b10100000
         MUL = 0b10100010
         PUSH = 0b01000101
         POP = 0b01000110
@@ -98,17 +99,33 @@ class CPU:
             elif IR == HLT:
                 running = False
                 self.PC += 1
+            elif IR == ADD:
+                self.alu("ADD", operandA, operandB)
+                self.PC += 3
             elif IR == MUL:
                 self.alu("MUL", operandA, operandB)
                 self.PC += 3
             elif IR == POP:
+                # copy the value from the address pointed to by the SP, to the given register
                 self.register[operandA] = self.ram[self.SPL]
+                # increment pointer location
                 self.SPL += 1
                 self.PC += 2
             elif IR == PUSH:
                 self.SPL -= 1
+                # Copy the value in the given register to the address pointed to by SP.
+                # after we've moved the pointer
                 self.ram[self.SPL] = self.register[operandA]
                 self.PC += 2
+            elif IR == CALL:
+                #push the return addres to the stack
+                self.register[self.SPL] -= 1
+                self.ram[self.SPL] = self.PC +2
+                self.PC = self.register[operandA]
+            elif IR == RET:
+                self.PC = self.ram[self.register[self.SPL]]
+                self.register[self.SPL] += 1
+                
 
             else:
                 print(f"Unknown Instruction {IR}")

@@ -1,5 +1,5 @@
 import sys
-​
+
 PRINT_BEEJ     = 1
 HALT           = 2
 PRINT_NUM      = 3
@@ -8,6 +8,8 @@ PRINT_REGISTER = 5
 ADD            = 6
 PUSH           = 7
 POP            = 8
+CALL           = 9
+RET            = 10
 ​
 ​
 # 256 bytes of memory
@@ -118,6 +120,21 @@ while running:
         # Increment SP.
         register[SP] += 1
         pc += 2
+
+    elif command == CALL:
+        # push the return address on the stack
+        register[SP] -= 1
+        memory[register[SP]] = pc + 2
+        # The PC is set to the address stored in the give register
+        reg = memory[pc + 1]
+        # we jump to that location in RAM and execute the first instruction in the subroutine
+        pc = register[reg]
+    
+    elif command == RET:
+        # return from the subroutine
+        # pop the calue from the top of the stack and store it in the PC
+        pc = memory[register[SP]]
+        register[SP] += 1
 ​
 ​
     else:

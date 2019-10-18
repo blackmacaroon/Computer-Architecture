@@ -9,7 +9,7 @@ class CPU:
         self.register = [0] * 8
         self.PC = 0
         self.SPL = 7   #points to register 7  aka 0xF4
-        self.flags = 0b00000000 # regiseter made of 8 bits 'FL' bits: 0b00000LGE
+        self.flags = 0b00000000 # register made of 8 bits 'FL' bits: 0b00000LGE
     
         
     def load(self):
@@ -55,17 +55,17 @@ class CPU:
         elif op == "DIV":
             self.register[reg_a] /= self.register[reg_b]
         elif op == "CMP":  #compare
-            #* If they are equal, set the Equal `E` flag to 1, otherwise set it to 0.
-            if reg_a == reg_b:
-                self.flags == 0b00000001
             # * If registerA is less than registerB, set the Less-than `L` flag to 1,
             #   otherwise set it to 0.
-            elif reg_a < reg_b:
+            if reg_a < reg_b:
                 self.flags == 0b00000100
             # * If registerA is greater than registerB, set the Greater-than `G` flag
             #   to 1, otherwise set it to 0.
             elif reg_a > reg_b:
                 self.flags == 0b00000010
+            #* If they are equal, set the Equal `E` flag to 1, otherwise set it to 0.
+            elif reg_a == reg_b:
+                self.flags == 0b00000001
         else:
             raise Exception("Unsupported ALU operation")
     def ram_read(self, MAR):
@@ -162,7 +162,7 @@ class CPU:
             # flags 00000LGE
             elif IR == JEQ:
                 # If `equal` flag is set (true)
-                if self.flags == True:
+                if self.flags == 0b00000001:
                     # jump to the address stored in the given register
                     self.PC = self.register[operandA]
                 #otherwise, skip to the next instruction PC += 2
@@ -171,7 +171,7 @@ class CPU:
                 
             elif IR == JNE:
                 # If `E` flag is clear (false, 0)
-                if self.flags == False:
+                if self.flags == 0b00000000:
                     #jump to the address stored in the given register
                     self.PC = self.register[operandA]
                 # otherwise, skip to the next instruction PC += 2

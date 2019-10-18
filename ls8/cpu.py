@@ -8,8 +8,9 @@ class CPU:
         self.ram = [0] * 256
         self.register = [0] * 8
         self.PC = 0
-        self.SPL = 7
-        
+        self.SPL = 7   #points to register 7  aka 0xF4
+        self.flags = 0b00000000 # regiseter made of 8 bits 'FL' bits: 0b00000LGE
+    
         
     def load(self):
         """Load a program into memory."""
@@ -53,6 +54,18 @@ class CPU:
             self.register[reg_a] *= self.register[reg_b]
         elif op == "DIV":
             self.register[reg_a] /= self.register[reg_b]
+        elif op == "CMP":  #compare
+            #* If they are equal, set the Equal `E` flag to 1, otherwise set it to 0.
+            if reg_a == reg_b:
+                self.flags == 0b00000001
+            # * If registerA is less than registerB, set the Less-than `L` flag to 1,
+            #   otherwise set it to 0.
+            elif reg_a < reg_b:
+                self.flags == 0b00000100
+            # * If registerA is greater than registerB, set the Greater-than `G` flag
+            #   to 1, otherwise set it to 0.
+            elif reg_a > reg_b:
+                self.flags == 0b00000010
         else:
             raise Exception("Unsupported ALU operation")
     def ram_read(self, MAR):
@@ -83,12 +96,15 @@ class CPU:
         HLT = 0b00000001
         LDI = 0b10000010
         ADD = 0b10100000
+        SUB = 0b10100001
         MUL = 0b10100010
         DIV = 0b10100011
         PUSH = 0b01000101
         POP = 0b01000110
         CALL = 0b01010000
         RET = 0b00010001
+        CMP = 0b10100111
+        JMP = 0b01010100
         running = True
         while running:
             IR = self.ram[self.PC]
@@ -108,8 +124,17 @@ class CPU:
             elif IR == ADD:
                 self.alu("ADD", operandA, operandB)
                 self.PC += 3
+            elif IR == SUB:
+                self.alu("SUB", operandA, operandB)
+                self.PC += 3
             elif IR == MUL:
                 self.alu("MUL", operandA, operandB)
+                self.PC += 3
+            elif IR == DIV:
+                self.alu("DIV", operandA, operandB)
+                self.PC += 3
+            elif IR == CMP:
+                self.alu("CMP", operandA, operandB)
                 self.PC += 3
             elif IR == POP:
                 # copy the value from the address pointed to by the SP, to the given register
@@ -128,6 +153,12 @@ class CPU:
             elif IR == RET:
                 self.PC = self.ram[self.SPL]
                 self.register[self.SPL] += 1
+            elif IR == JMP:
+                pass
+            elif IR == JEQ:
+                pass
+            elif IR == JNE:
+                pass
                 
 
             else:

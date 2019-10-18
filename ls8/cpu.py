@@ -105,6 +105,8 @@ class CPU:
         RET = 0b00010001
         CMP = 0b10100111
         JMP = 0b01010100
+        JEQ = 0b01010101
+        JNE = 0b01010110
         running = True
         while running:
             IR = self.ram[self.PC]
@@ -154,11 +156,28 @@ class CPU:
                 self.PC = self.ram[self.SPL]
                 self.register[self.SPL] += 1
             elif IR == JMP:
-                pass
+                # Jump to the address stored in the given register
+                # Set the `PC` to the address stored in the given register
+                self.PC = self.register[operandA]  # A is the address, not the pointer, send the counter to the given address
+            # flags 00000LGE
             elif IR == JEQ:
-                pass
+                # If `equal` flag is set (true)
+                if self.flags == True:
+                    # jump to the address stored in the given register
+                    self.PC = self.register[operandA]
+                #otherwise, skip to the next instruction PC += 2
+                else:
+                    self.PC += 2
+                
             elif IR == JNE:
-                pass
+                # If `E` flag is clear (false, 0)
+                if self.flags == False:
+                    #jump to the address stored in the given register
+                    self.PC = self.register[operandA]
+                # otherwise, skip to the next instruction PC += 2
+                else:
+                    self.PC += 2
+                
                 
 
             else:
